@@ -2,15 +2,18 @@ import { formatDistance, subDays } from 'date-fns'
 import css from "./style.css";
 import { createElementInDOM } from "./createElementInDOM.js";
 
-
-// formatDistance(subDays(new Date(), 3), new Date(), { addSuffix: true })
-//=> "3 days ago"
+//Create some arrays for all the projects and to-do's we create to be stored in
+const projectList = [];
+const toDoList = [];
 
 // Prototype for projects
 const project = {
+
     init: function(name) {
         this.name = name;
         this.toDos = [];
+        this.deleted = false;
+        projectList.push(this);
     },
 
     linkToDo: function(toDo) {
@@ -22,7 +25,7 @@ const project = {
         let index = this.toDos.indexOf(toDo)
         if(index !== -1) {
             this.toDos.splice(index, 1);
-            toDo.project = null;
+            toDo.project = 'default';
         }
     }
 
@@ -31,7 +34,8 @@ const project = {
     //deleteProject: function  {}
 }
 
-const toDoList = [];
+
+
 
 //Prototype for toDo objects
 const toDo = {
@@ -42,7 +46,8 @@ const toDo = {
         this.dueDate = dueDate;
         this.priority = priority;
         this.notes = notes;
-        this.project = null;
+        this.project = 'default';
+        this.completed = false
         this.deleted = false;
         toDoList.push(this);
     },
@@ -64,48 +69,38 @@ const toDo = {
 
 
 //Testing
+//Add a few bits into the global scope to allow me to mess around in the console
 window.toDo = toDo;
 window.toDoList = toDoList;
 window.project = project;
+window.projectList = projectList;
 
-
+//Create an example project
 const exampleProject = Object.create(project);
 exampleProject.init('exampleProject');
-console.log(`Created project: ${exampleProject.name}`);
 
-
-//Use Object.create to create a new object with the toDo prototype.
+//Create an example todo
 const exampleToDo = Object.create(toDo);
-console.log(exampleToDo.title);
 exampleToDo.init('example to-do', 'desc', 'tomorrow', 'high', "here's some notes");
-console.log(exampleToDo.title);
 
-//Link to a project
+//Link example toDo to example project
 exampleProject.linkToDo(exampleToDo);
-console.log(`exampleProject has the following linked toDos: ${exampleProject.toDos[0].title}`);
-console.log(`exampleTodo is linked to ${exampleToDo.project.name}`);
 
-//Read the details
-console.table(exampleToDo.read());
-// console.log(exampleToDo.project);
+//add the examples to the 'window' object so I can manipulate them from the console.
+window.exampleToDo = exampleToDo;
+window.exampleProject = exampleProject;
 
 
-exampleToDo.delete();
-console.log(`after delete exampleProject has the following linked toDos: ${exampleProject.toDos[0]}`);
-console.log(`after delete exampleTodo is linked to ${exampleToDo.project}`);
-
-
-//read to-do item
 
 
 //update to-do item
-
-
-
-// view all projects
-
 
 // view all todos in each project (probably just the title and duedate… perhaps changing color for different priorities)
 
 
 // Implement localStorage https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
+
+
+
+// formatDistance(subDays(new Date(), 3), new Date(), { addSuffix: true })
+//=> "3 days ago"
