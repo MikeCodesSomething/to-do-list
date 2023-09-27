@@ -17,6 +17,10 @@ const project = {
     },
 
     linkToDo: function(toDo) {
+        //Remove old link if one exists
+        toDo.project.unlinkToDo(toDo)
+
+        //Create new link to this project
         toDo.project = this;
         this.toDos.push(toDo);
     },
@@ -29,10 +33,6 @@ const project = {
         }
     },
 
-    //getProject: function  {} - Do I need this?
-    //updateProject: function  {}
-    //deleteProject: function  {}
-
     delete: function() {
         this.deleted = true;
         //unlink all todos
@@ -40,7 +40,9 @@ const project = {
         for(let i = this.toDos.length - 1; i >= 0; i--) {
             this.unlinkToDo(this.toDos[i]);
         }
-        
+
+    //getProject: function  {} - Do I need this?
+    //updateProject: function  {}        
 
     }
 }
@@ -52,15 +54,21 @@ const project = {
 const toDo = {
     
     init: function(title, description, dueDate, priority, notes) {
+        
+        //Initialise properties
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
         this.priority = priority;
         this.notes = notes;
-        this.project = 'default';
         this.completed = false
         this.deleted = false;
         toDoList.push(this);
+
+        //Put it in the default project by default
+        this.project = defaultProject;
+        defaultProject.linkToDo(this);
+        
     },
 
     read: function() {
@@ -76,7 +84,21 @@ const toDo = {
 
 };
 
-//Initiate
+
+// To-dolistception:
+// Create a default project
+// Display module for the DOM
+// Implement localStorage https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
+// Update to-do items
+// Update projects
+
+
+// Initiate
+const defaultProject = Object.create(project);
+defaultProject.init('default');
+
+
+
 
 
 //Testing
@@ -85,6 +107,11 @@ window.toDo = toDo;
 window.toDoList = toDoList;
 window.project = project;
 window.projectList = projectList;
+window.defaultProject = defaultProject;
+
+
+
+
 
 //Create an example project
 const exampleProject = Object.create(project);
@@ -100,16 +127,6 @@ exampleProject.linkToDo(exampleToDo);
 //add the examples to the 'window' object so I can manipulate them from the console.
 window.exampleToDo = exampleToDo;
 window.exampleProject = exampleProject;
-
-
-
-
-//update to-do item
-
-// view all todos in each project (probably just the title and duedate… perhaps changing color for different priorities)
-
-
-// Implement localStorage https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
 
 
 
