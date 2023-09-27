@@ -1,6 +1,6 @@
 import { formatDistance, subDays } from 'date-fns'
 import css from "./style.css";
-import { createElementInDOM } from "./createElementInDOM.js";
+import { render, createElementInDOM } from "./displayController.js";
 
 //Create some arrays for all the projects and to-do's we create to be stored in
 const projectList = [];
@@ -41,8 +41,6 @@ const project = {
             this.unlinkToDo(this.toDos[i]);
         }
 
-    //getProject: function  {} - Do I need this?
-    //updateProject: function  {}        
 
     }
 }
@@ -86,16 +84,18 @@ const toDo = {
 
 
 // To-dolistception:
-// Create a default project
 // Display module for the DOM
 // Implement localStorage https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
-// Update to-do items
-// Update projects
+// Update to-do items from UI
+// Update projects from UI
 
 
 // Initiate
 const defaultProject = Object.create(project);
 defaultProject.init('default');
+console.log(projectList);
+let contentContainer = createElementInDOM('div', undefined, 'content', 'content-container')
+render(projectList, toDoList);
 
 
 
@@ -128,7 +128,7 @@ exampleProject.linkToDo(exampleToDo);
 window.exampleToDo = exampleToDo;
 window.exampleProject = exampleProject;
 
-
+render(projectList, toDoList);
 
 // formatDistance(subDays(new Date(), 3), new Date(), { addSuffix: true })
 //=> "3 days ago"
