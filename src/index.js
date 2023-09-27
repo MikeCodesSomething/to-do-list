@@ -27,11 +27,22 @@ const project = {
             this.toDos.splice(index, 1);
             toDo.project = 'default';
         }
-    }
+    },
 
     //getProject: function  {} - Do I need this?
     //updateProject: function  {}
     //deleteProject: function  {}
+
+    delete: function() {
+        this.deleted = true;
+        //unlink all todos
+        //Need to go backwards here to workaround the fact to toDo array gets smaller with each loop
+        for(let i = this.toDos.length - 1; i >= 0; i--) {
+            this.unlinkToDo(this.toDos[i]);
+        }
+        
+
+    }
 }
 
 
