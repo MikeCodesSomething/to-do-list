@@ -108,6 +108,7 @@ window.toDoList = toDoList;
 window.project = project;
 window.projectList = projectList;
 window.defaultProject = defaultProject;
+window.render = render;
 
 
 
@@ -128,9 +129,16 @@ exampleProject.linkToDo(exampleToDo);
 const exampleToDo2 = Object.create(toDo);
 exampleToDo2.init('example to-do2', 'desc', 'tomorrow', 'med', "here's some notes");
 
+//Create a third example todo (unlinked)
+const exampleToDo3 = Object.create(toDo);
+exampleToDo3.init('example to-do3', 'desc', 'tomorrow', 'med', "here's some notes");
+
+
 
 //add the examples to the 'window' object so I can manipulate them from the console.
 window.exampleToDo = exampleToDo;
+window.exampleToDo2 = exampleToDo2;
+
 window.exampleProject = exampleProject;
 
 render(projectList, toDoList);

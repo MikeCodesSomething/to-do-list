@@ -1,3 +1,27 @@
+body {
+    background-color: rgb(244, 241, 247);
+    margin: 0px;
+
+} 
+
+/* Project container styles */
+
+#content-container {
+    display: flex;
+}
+
+.project-container {
+    border: 1px solid red;
+}
+
+/* To-Do styles */
+
+.to-do-card {
+    min-height: 30px;
+    border: 1px solid black;
+    background-color: white;
+}
+
 /* Overlay and form styles */
 
 .overlay {
@@ -18,7 +42,7 @@
 
 .add-to-do-form {
     width: 40vw;
-    height: 30vh;
+    height: max(40vh,300px);
     padding: 20px;
     background-color: white;
     display: flex;
@@ -32,4 +56,6 @@
 .close-button {
     align-self: end;
     padding: 4px;
+    flex-basis: 20px;
+    flex-shrink: 0;
 }
