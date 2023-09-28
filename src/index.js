@@ -124,6 +124,11 @@ exampleToDo.init('example to-do', 'desc', 'tomorrow', 'high', "here's some notes
 //Link example toDo to example project
 exampleProject.linkToDo(exampleToDo);
 
+//Create a second example todo (unlinked)
+const exampleToDo2 = Object.create(toDo);
+exampleToDo2.init('example to-do2', 'desc', 'tomorrow', 'med', "here's some notes");
+
+
 //add the examples to the 'window' object so I can manipulate them from the console.
 window.exampleToDo = exampleToDo;
 window.exampleProject = exampleProject;
