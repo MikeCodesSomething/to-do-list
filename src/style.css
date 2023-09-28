@@ -1,0 +1,35 @@
+/* Overlay and form styles */
+
+.overlay {
+    display: none;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(53, 53, 53, 0.6);
+}
+
+.overlay.open {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-to-do-form {
+    width: 40vw;
+    height: 30vh;
+    padding: 20px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.close-button {
+    align-self: end;
+    padding: 4px;
+}
