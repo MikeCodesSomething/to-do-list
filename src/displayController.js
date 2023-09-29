@@ -1,6 +1,3 @@
-//Creates an element in the DOM, with optional ID and className
-//Attaches it to the specified parent element, or body if not specified
-
 export function render(projectList, toDoList) {
     //Reset the container
     let contentContainer = document.querySelector('#content-container');
@@ -26,6 +23,10 @@ export function render(projectList, toDoList) {
         toDoCard.textContent = toDo.title;
     }
 
+};
+
+export function initOverlay() {
+
     //Overlay initilisation, could move this out if there's a better place
     let closeOverlayButton = document.getElementById("close-overlay-button");
     let overlay = document.getElementById("overlay");
@@ -33,17 +34,36 @@ export function render(projectList, toDoList) {
     closeOverlayButton.addEventListener('click', closeOverlay);
     
     let addToDoForm = document.getElementById('add-to-do-form');
-    addToDoForm.addEventListener('submit', addToDoWithForm);
-
-};
+    addToDoForm.addEventListener('submit', addToDoWithForm);   
+    console.log("init overlay was called") 
+}
 
 function addToDoWithForm(e) {
     //Stop the form actually getting submitted as we don't do anything with that right now
     e.preventDefault();
     
     //Get all the form values and link them to toDo item properties
-    let formValues = document.querySelectorAll('input')
-    console.log(formValues)
+    let projectName = document.getElementById("new-to-do-project").value;
+    let title = document.getElementById("title").value;
+    let description = document.getElementById("description").value;
+    let dueDate = document.getElementById("due-date").value;
+    let priority = document.getElementById("priority").value;
+    let notes = document.getElementById("notes").value;
+    
+    //Create our object
+    let newToDo = Object.create(toDo);
+    newToDo.init(title, description, dueDate, priority, notes);
+
+    //Figure out what project we've got from name, this won't work if you make 2 projects with the same name
+    let defaultProjectName = projectList[0].name
+    if(projectName !== defaultProjectName) {
+        let projectObject = projectList.find(obj => obj.name === projectName);
+        projectObject.linkToDo(newToDo);
+    }
+    
+    render(projectList, toDoList);
+    
+    console.log(title)
 }
 
 

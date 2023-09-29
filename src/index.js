@@ -1,6 +1,6 @@
 import { formatDistance, subDays } from 'date-fns'
 import css from "./style.css";
-import { render, createElementInDOM } from "./displayController.js";
+import { initOverlay, render, createElementInDOM } from "./displayController.js";
 
 //Create some arrays for all the projects and to-do's we create to be stored in
 const projectList = [];
@@ -84,7 +84,6 @@ const toDo = {
 
 
 // To-dolistception:
-// Display module for the DOM
 // Implement localStorage https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
 // Update to-do items from UI
 // Update projects from UI
@@ -94,6 +93,7 @@ const toDo = {
 const defaultProject = Object.create(project);
 defaultProject.init('Inbox');
 render(projectList, toDoList);
+initOverlay();
 
 
 
