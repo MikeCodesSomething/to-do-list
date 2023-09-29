@@ -60,10 +60,13 @@ function addToDoWithForm(e) {
         let projectObject = projectList.find(obj => obj.name === projectName);
         projectObject.linkToDo(newToDo);
     }
-    
+
+    //Reload and close the overlay
     render(projectList, toDoList);
+    closeOverlay();
+    let addToDoForm = document.getElementById('add-to-do-form');
+    addToDoForm.reset();
     
-    console.log(title)
 }
 
 
