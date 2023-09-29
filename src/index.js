@@ -92,9 +92,7 @@ const toDo = {
 
 // Initiate
 const defaultProject = Object.create(project);
-defaultProject.init('default');
-console.log(projectList);
-let contentContainer = createElementInDOM('div', undefined, 'content', 'content-container')
+defaultProject.init('Inbox');
 render(projectList, toDoList);
 
 

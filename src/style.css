@@ -54,6 +54,7 @@ body {
 }
 
 .close-button {
+    /* display: none; */
     align-self: end;
     padding: 4px;
     flex-basis: 20px;

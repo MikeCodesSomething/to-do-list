@@ -3,7 +3,43 @@
   <head>
     <meta charset="utf-8">
     <title>To-Do List</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1"><script defer src="main.js"></script></head>
+  <meta name="viewport" content="width=device-width, initial-scale=1"><script defer src="main.js"></script><script defer src="main.js"></script><link href="main.css" rel="stylesheet"></head>
   <body>
+    <div class="content" id ="content-container"></div>
+    <div class="overlay" id="overlay"> 
+        <div class="menu">
+            <form id="add-to-do-form" class="add-to-do-form" action="">
+                <svg class="close-button" id="close-overlay-button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <title class="close-button" >close-box-outline</title>
+                    <path class="close-button" d="M19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M19,19H5V5H19V19M17,8.4L13.4,12L17,15.6L15.6,17L12,13.4L8.4,17L7,15.6L10.6,12L7,8.4L8.4,7L12,10.6L15.6,7L17,8.4Z" />
+                </svg>
+                <label for="new-to-do-project">Project</label>
+                    <input type="text" id="new-to-do-project" disabled>
+                <label for="title">Title*</label>
+                    <input id="title" type="text" required>
+                <label for="description">Description</label>
+                    <input id="description" type="text">
+                <label for="due-date">Due Date</label>
+                    <input id="due-date" type="date">
+                <label for="priority">Priority</label>
+                    <select name="priority" id="priority">
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                        <option value="critical">Critical</option>
+                    </select>
+                <label for="notes">Notes</label>
+                    <input id="notes" type="text">
+                <label for="add-to-do"></label>
+                    <button id="add-to-do">Add To-Do</button>
+            </form>
+        </div>
+    </div>
   </body>
 </html>
+<!-- 
+this.title = title;
+this.description = description;
+this.dueDate = dueDate;
+this.priority = priority;
+this.notes = notes; -->

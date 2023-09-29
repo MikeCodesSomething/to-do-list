@@ -22,6 +22,7 @@ export function render(projectList, toDoList) {
         //Get the linked project (using name, so this will break if two project have the same name!)
         let linkedProject = document.querySelector(`#${toDo.project.name}`);
         let toDoCard = createElementInDOM('div', linkedProject, 'to-do-card', toDo.title);
+        
         toDoCard.textContent = toDo.title;
     }
 
@@ -30,8 +31,20 @@ export function render(projectList, toDoList) {
     let overlay = document.getElementById("overlay");
     overlay.addEventListener('click', (e) => {if(e.target === overlay) closeOverlay()});
     closeOverlayButton.addEventListener('click', closeOverlay);
+    
+    let addToDoForm = document.getElementById('add-to-do-form');
+    addToDoForm.addEventListener('submit', addToDoWithForm);
 
 };
+
+function addToDoWithForm(e) {
+    //Stop the form actually getting submitted as we don't do anything with that right now
+    e.preventDefault();
+    
+    //Get all the form values and link them to toDo item properties
+    let formValues = document.querySelectorAll('input')
+    console.log(formValues)
+}
 
 
 export function createElementInDOM(elementType, parentElement, className, id) {
