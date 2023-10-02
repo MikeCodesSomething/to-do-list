@@ -4,6 +4,10 @@ body {
 
 } 
 
+.hidden {
+    display:none;
+}
+
 /* Project container styles */
 
 #content-container {
@@ -12,6 +16,20 @@ body {
 
 .project-container {
     border: 1px solid red;
+}
+
+.new-project-container {
+    display:flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.new-project-container>input {
+    height: 28px;
+    max-width: 180px;
+    font-size: 1.5em;
+    font-weight: bold;
 }
 
 /* To-Do styles */

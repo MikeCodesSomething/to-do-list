@@ -1,9 +1,12 @@
 import { formatDistance, subDays } from 'date-fns'
 import css from "./style.css";
+import { projectList, project, createProject } from "./project.js"
 import { initOverlay, render, createElementInDOM } from "./displayController.js";
 
 
 // To-dolistception:
+// Add a way to complete tasks and display due date by default
+// Add a way to view more details of the task
 // Implement localStorage https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
 // Update to-do items from UI
 // Update projects from UI
@@ -11,49 +14,7 @@ import { initOverlay, render, createElementInDOM } from "./displayController.js"
 
 
 //Create some arrays for all the projects and to-do's we create to be stored in
-const projectList = [];
-const toDoList = [];
-
-// Prototype for projects
-const project = {
-
-    init: function(name) {
-        this.name = name;
-        this.toDos = [];
-        this.deleted = false;
-        projectList.push(this);
-    },
-
-    linkToDo: function(toDo) {
-        //Remove old link if one exists
-        toDo.project.unlinkToDo(toDo)
-
-        //Create new link to this project
-        toDo.project = this;
-        this.toDos.push(toDo);
-    },
-
-    unlinkToDo: function(toDo) {
-        let index = this.toDos.indexOf(toDo)
-        if(index !== -1) {
-            this.toDos.splice(index, 1);
-            toDo.project = 'default';
-        }
-    },
-
-    delete: function() {
-        this.deleted = true;
-        //unlink all todos
-        //Need to go backwards here to workaround the fact to toDo array gets smaller with each loop
-        for(let i = this.toDos.length - 1; i >= 0; i--) {
-            this.unlinkToDo(this.toDos[i]);
-        }
-
-
-    }
-}
-
-
+export const toDoList = [];
 
 
 //Prototype for toDo objects
@@ -94,8 +55,8 @@ const toDo = {
 
 
 // Initiate
-const defaultProject = Object.create(project);
-defaultProject.init('Inbox');
+
+const defaultProject = createProject('Inbox');
 render(projectList, toDoList);
 initOverlay();
 
@@ -117,8 +78,7 @@ window.render = render;
 
 
 //Create an example project
-const exampleProject = Object.create(project);
-exampleProject.init('exampleProject');
+const exampleProject = createProject('exampleProject');
 
 //Create an example todo
 const exampleToDo = Object.create(toDo);

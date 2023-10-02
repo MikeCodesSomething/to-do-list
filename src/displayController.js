@@ -1,14 +1,19 @@
-export function render(projectList, toDoList) {
+import { projectList, createProject } from "./project.js";
+import { toDoList } from "./index.js";
+
+export function render() {
+    
     //Reset the container
     let contentContainer = document.querySelector('#content-container');
     contentContainer.replaceChildren();
 
     //Create container and title for projects
     for(let project of projectList) {
-        let projectContainer = createElementInDOM('div', contentContainer, 'project-container', project.name)
+        //We replace spaces in the project name with '-' for the purposes of setting the ID
+        let projectContainer = createElementInDOM('div', contentContainer, 'project-container', project.name.split(' ').join('-'))
         let projectTitle = createElementInDOM('h2', projectContainer, 'title', project.name)
         projectTitle.textContent = project.name;
-        let projectAddToDoButton = createElementInDOM('button',projectContainer,'add-to-do-button',project.name)
+        let projectAddToDoButton = createElementInDOM('button',projectContainer,'add-to-do-button',project.name.split(' ').join('-'))
         projectAddToDoButton.textContent = 'Add To-Do'
         projectAddToDoButton.addEventListener('click', openOverlay)
     }
@@ -17,13 +22,50 @@ export function render(projectList, toDoList) {
     console.log(toDoList)
     for(let toDo of toDoList) {
         //Get the linked project (using name, so this will break if two project have the same name!)
-        let linkedProject = document.querySelector(`#${toDo.project.name}`);
+        let linkedProject = document.querySelector(`#${toDo.project.name.split(' ').join('-')}`);
         let toDoCard = createElementInDOM('div', linkedProject, 'to-do-card', toDo.title);
         
         toDoCard.textContent = toDo.title;
     }
 
+    //Create 'Add Project' button and initialise
+    let newProjectContainer = createElementInDOM('div', contentContainer, 'new-project-container', 'new-project-container')
+    let newProjectButton = createElementInDOM('button', newProjectContainer, 'new-project-button', 'new-project-button');
+    newProjectButton.textContent = 'Add Project';
+    newProjectButton.addEventListener('click', openNewProjectEntry)
+
+
 };
+
+function openNewProjectEntry(newprojectContainer) {
+    let newProjectButton = document.querySelector('.new-project-button') ;
+    newProjectButton.classList.add('hidden')
+
+    let newProjectContainer = document.querySelector('.new-project-container');
+    newProjectContainer.classList.add('project-container');
+
+
+    let newProjectNameLabel = createElementInDOM('label', newProjectContainer, 'new-project-name-label');
+    newProjectNameLabel.textContent = 'New project name:';
+    newProjectNameLabel.htmlFor = 'new-project-name';
+
+    let newProjectNameInput = createElementInDOM('input', newProjectContainer, 'new-project-name');
+
+    let newProjectSaveButton = createElementInDOM('button', newProjectContainer, 'save-new-project-button', 'save-new-project-button')
+    newProjectSaveButton.textContent = 'Save';
+    newProjectSaveButton.addEventListener('click', () =>  {
+        createProject(newProjectNameInput.value);
+        render(projectList, toDoList);
+    });
+
+    let newProjectCancelButton = createElementInDOM('button', newProjectContainer, 'cancel-new-project-button', 'cancel-new-project-button')
+    newProjectCancelButton.textContent = 'Cancel';
+    newProjectCancelButton.addEventListener('click', render);
+}
+
+function addNewProject() {
+    
+}
 
 export function initOverlay() {
 
@@ -57,7 +99,7 @@ function addToDoWithForm(e) {
     //Figure out what project we've got from name, this won't work if you make 2 projects with the same name
     let defaultProjectName = projectList[0].name
     if(projectName !== defaultProjectName) {
-        let projectObject = projectList.find(obj => obj.name === projectName);
+        let projectObject = projectList.find(obj => obj.name.split(' ').join('-') === projectName);
         projectObject.linkToDo(newToDo);
     }
 
