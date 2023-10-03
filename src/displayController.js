@@ -10,61 +10,69 @@ export function render() {
     //Create container and title for projects
     for(let project of projectList) {
         //We replace spaces in the project name with '-' for the purposes of setting the ID
-        let projectContainer = createElementInDOM('div', contentContainer, 'project-container', project.name.split(' ').join('-'))
-        let projectTitle = createElementInDOM('h2', projectContainer, 'title', project.name)
+        let projectNameInHTML = project.name.split(' ').join('-');
+        let projectContainer = createElementInDOM('div', contentContainer, 'project-container', projectNameInHTML);
+        let projectTitle = createElementInDOM('h2', projectContainer, 'title', project.name);
         projectTitle.textContent = project.name;
-        let projectAddToDoButton = createElementInDOM('button',projectContainer,'add-to-do-button',project.name.split(' ').join('-'))
-        projectAddToDoButton.textContent = 'Add To-Do'
-        projectAddToDoButton.addEventListener('click', openOverlay)
+        let projectToDoContainer = createElementInDOM('div', projectContainer, 'project-to-dos-container', `${projectNameInHTML}-to-dos`);
+        let projectAddToDoButton = createElementInDOM('button', projectContainer,'add-to-do-button', projectNameInHTML);
+        projectAddToDoButton.textContent = 'Add To-Do';
+        projectAddToDoButton.addEventListener('click', openOverlay);
+
+        
     }
 
     //Create cards for tasks in the project container
     console.log(toDoList)
     for(let toDo of toDoList) {
         //Get the linked project (using name, so this will break if two project have the same name!)
-        let linkedProject = document.querySelector(`#${toDo.project.name.split(' ').join('-')}`);
-        let toDoCard = createElementInDOM('div', linkedProject, 'to-do-card', toDo.title);
+        let projectToDosContainerID = `${toDo.project.name.split(' ').join('-')}-to-dos`
+        let linkedProjectToDosContainer = document.querySelector(`#${projectToDosContainerID}`);
+        let toDoCard = createElementInDOM('div', linkedProjectToDosContainer, 'to-do-card', toDo.title);
         
         toDoCard.textContent = toDo.title;
     }
+    
 
     //Create 'Add Project' button and initialise
     let newProjectContainer = createElementInDOM('div', contentContainer, 'new-project-container', 'new-project-container')
     let newProjectButton = createElementInDOM('button', newProjectContainer, 'new-project-button', 'new-project-button');
-    newProjectButton.textContent = 'Add Project';
+    newProjectButton.textContent = '+ Add Project';
     newProjectButton.addEventListener('click', openNewProjectEntry)
 
 
 };
 
 function openNewProjectEntry(newprojectContainer) {
+    
+    //Update container view
     let newProjectButton = document.querySelector('.new-project-button') ;
     newProjectButton.classList.add('hidden')
 
     let newProjectContainer = document.querySelector('.new-project-container');
     newProjectContainer.classList.add('project-container');
 
-
+    //Create an input field for user to enter project name, and focus it
     let newProjectNameLabel = createElementInDOM('label', newProjectContainer, 'new-project-name-label');
     newProjectNameLabel.textContent = 'New project name:';
     newProjectNameLabel.htmlFor = 'new-project-name';
 
     let newProjectNameInput = createElementInDOM('input', newProjectContainer, 'new-project-name');
+    newProjectNameInput.focus();
 
-    let newProjectSaveButton = createElementInDOM('button', newProjectContainer, 'save-new-project-button', 'save-new-project-button')
+    //Create buttons to save or cancel the new project addition
+    let newProjectButtonContainer = createElementInDOM('div', newProjectContainer, 'button-container');
+
+    let newProjectSaveButton = createElementInDOM('button', newProjectButtonContainer, 'save-new-project-button', 'save-new-project-button')
     newProjectSaveButton.textContent = 'Save';
     newProjectSaveButton.addEventListener('click', () =>  {
         createProject(newProjectNameInput.value);
         render(projectList, toDoList);
     });
 
-    let newProjectCancelButton = createElementInDOM('button', newProjectContainer, 'cancel-new-project-button', 'cancel-new-project-button')
+    let newProjectCancelButton = createElementInDOM('button', newProjectButtonContainer, 'cancel-new-project-button', 'cancel-new-project-button')
     newProjectCancelButton.textContent = 'Cancel';
     newProjectCancelButton.addEventListener('click', render);
-}
-
-function addNewProject() {
-    
 }
 
 export function initOverlay() {
@@ -139,6 +147,8 @@ function openOverlay(e) {
     projectInput.value = project;
     let overlay = document.getElementById("overlay");
     overlay.classList.add("open");
+    let title = document.getElementById("title");
+    title.focus();
 }
 
 function closeOverlay() {
