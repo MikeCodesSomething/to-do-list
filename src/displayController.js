@@ -8,16 +8,21 @@ export function render() {
     contentContainer.replaceChildren();
 
     //Create container and title for projects
-    for(let project of projectList) {
-        //We replace spaces in the project name with '-' for the purposes of setting the ID
+    for(let project of projectList) {    
+        
+        //We replace spaces in the project name with '-' for the purposes of setting the 
         let projectNameInHTML = project.name.split(' ').join('-');
-        let projectContainer = createElementInDOM('div', contentContainer, 'project-container', projectNameInHTML);
-        let projectTitle = createElementInDOM('h2', projectContainer, 'title', project.name);
+        let projectContainer = createElementInDOM('div', contentContainer, 'project-container');
+        let projectTitle = createElementInDOM('h2', projectContainer, 'title');
         projectTitle.textContent = project.name;
-        let projectToDoContainer = createElementInDOM('div', projectContainer, 'project-to-dos-container', `${projectNameInHTML}-to-dos`);
-        let projectAddToDoButton = createElementInDOM('button', projectContainer,'add-to-do-button', projectNameInHTML);
+        let projectToDoContainer = createElementInDOM('div', projectContainer, 'project-to-dos-container');
+        projectToDoContainer.dataset.projectId = project.id;
+
+        let projectAddToDoButton = createElementInDOM('button', projectContainer,'add-to-do-button');
         projectAddToDoButton.textContent = 'Add To-Do';
         projectAddToDoButton.addEventListener('click', openOverlay);
+        projectAddToDoButton.dataset.projectId = project.id;
+
 
         
     }
@@ -25,18 +30,16 @@ export function render() {
     //Create cards for tasks in the project container
     console.log(toDoList)
     for(let toDo of toDoList) {
-        //Get the linked project (using name, so this will break if two project have the same name!)
-        let projectToDosContainerID = `${toDo.project.name.split(' ').join('-')}-to-dos`
-        let linkedProjectToDosContainer = document.querySelector(`#${projectToDosContainerID}`);
-        let toDoCard = createElementInDOM('div', linkedProjectToDosContainer, 'to-do-card', toDo.title);
-        
+        //Get the linked project using the project id
+        let linkedProjectToDosContainer = document.querySelector(`.project-to-dos-container[data-project-id="${toDo.project.id}"]`);
+        let toDoCard = createElementInDOM('div', linkedProjectToDosContainer, 'to-do-card');
         toDoCard.textContent = toDo.title;
     }
     
 
     //Create 'Add Project' button and initialise
-    let newProjectContainer = createElementInDOM('div', contentContainer, 'new-project-container', 'new-project-container')
-    let newProjectButton = createElementInDOM('button', newProjectContainer, 'new-project-button', 'new-project-button');
+    let newProjectContainer = createElementInDOM('div', contentContainer, 'new-project-container')
+    let newProjectButton = createElementInDOM('button', newProjectContainer, 'new-project-button');
     newProjectButton.textContent = '+ Add Project';
     newProjectButton.addEventListener('click', openNewProjectEntry)
 
@@ -93,7 +96,9 @@ function addToDoWithForm(e) {
     e.preventDefault();
     
     //Get all the form values and link them to toDo item properties
-    let projectName = document.getElementById("new-to-do-project").value;
+    let project = document.getElementById("new-to-do-project");
+    let projectId = project.dataset.projectId;
+    let projectName = project.value;
     let title = document.getElementById("title").value;
     let description = document.getElementById("description").value;
     let dueDate = document.getElementById("due-date").value;
@@ -104,11 +109,9 @@ function addToDoWithForm(e) {
     let newToDo = Object.create(toDo);
     newToDo.init(title, description, dueDate, priority, notes);
 
-    //Figure out what project we've got from name, this won't work if you make 2 projects with the same name
-    let defaultProjectName = projectList[0].name
-    if(projectName !== defaultProjectName) {
-        let projectObject = projectList.find(obj => obj.name.split(' ').join('-') === projectName);
-        projectObject.linkToDo(newToDo);
+    //Link to the relevant project
+    if(projectName !== 0) {
+        projectList[projectId].linkToDo(newToDo);
     }
 
     //Reload and close the overlay
@@ -141,10 +144,12 @@ export function createElementInDOM(elementType, parentElement, className, id) {
 };
 
 function openOverlay(e) {
-    let project = e.target.id;
-    console.log(project);
+    let id = e.target.dataset.projectId;
+    console.log(id);
     let projectInput = document.getElementById("new-to-do-project");
-    projectInput.value = project;
+    projectInput.value = projectList[id].name;
+    projectInput.dataset.projectId = id;
+
     let overlay = document.getElementById("overlay");
     overlay.classList.add("open");
     let title = document.getElementById("title");

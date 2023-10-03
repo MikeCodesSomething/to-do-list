@@ -4,7 +4,8 @@ export const projectList = [];
 export const project = {
 
     init: function(name) {
-        this.name = name || `Project ${projectList.length + 1}`;
+        this.id = projectList.length
+        this.name = name || `Project ${this.id + 1}`;
         this.toDos = [];
         this.deleted = false;
         projectList.push(this);
