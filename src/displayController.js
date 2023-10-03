@@ -10,8 +10,6 @@ export function render() {
     //Create container and title for projects
     for(let project of projectList) {    
         
-        //We replace spaces in the project name with '-' for the purposes of setting the 
-        let projectNameInHTML = project.name.split(' ').join('-');
         let projectContainer = createElementInDOM('div', contentContainer, 'project-container');
         let projectTitle = createElementInDOM('h2', projectContainer, 'title');
         projectTitle.textContent = project.name;
@@ -32,8 +30,32 @@ export function render() {
     for(let toDo of toDoList) {
         //Get the linked project using the project id
         let linkedProjectToDosContainer = document.querySelector(`.project-to-dos-container[data-project-id="${toDo.project.id}"]`);
+        
+        //Create the to-do card
         let toDoCard = createElementInDOM('div', linkedProjectToDosContainer, 'to-do-card');
-        toDoCard.textContent = toDo.title;
+        
+        //Add card contents
+        let toDoCheckbox = createElementInDOM('input',toDoCard, 'to-do-checkbox');
+        toDoCheckbox.type = 'checkbox';
+        
+        //Set checkbox to checked and strikethrough text if to-do is completed
+        if(toDo.completed === true){
+            toDoCard.classList.add('completed');
+            toDoCheckbox.checked = true;
+        } 
+
+        toDoCheckbox.addEventListener('change', () => {
+            //Flip completed status
+            toDo.completed = !toDo.completed;
+            toDoCard.classList.toggle('completed');
+        });
+        
+
+        let toDoTitle = createElementInDOM('div', toDoCard, 'to-do-title');
+        toDoTitle.textContent = toDo.title;
+
+        let toDoDueDate = createElementInDOM('div', toDoCard, 'to-do-due-date');
+        toDoDueDate.textContent = toDo.dueDate === ""? "" :`Due: ${toDo.dueDate}`;
     }
     
 
@@ -55,27 +77,42 @@ function openNewProjectEntry(newprojectContainer) {
     let newProjectContainer = document.querySelector('.new-project-container');
     newProjectContainer.classList.add('project-container');
 
+    //Create a form for creating a new project
+    let newProjectForm = createElementInDOM('form', newProjectContainer, 'new-project-form', 'new-project-form');
+    newProjectForm.action = '';
+    newProjectForm.addEventListener('submit', addNewProject);
+
     //Create an input field for user to enter project name, and focus it
-    let newProjectNameLabel = createElementInDOM('label', newProjectContainer, 'new-project-name-label');
+    let newProjectNameLabel = createElementInDOM('label', newProjectForm, 'new-project-name-label');
     newProjectNameLabel.textContent = 'New project name:';
     newProjectNameLabel.htmlFor = 'new-project-name';
 
-    let newProjectNameInput = createElementInDOM('input', newProjectContainer, 'new-project-name');
+    let newProjectNameInput = createElementInDOM('input', newProjectForm, 'new-project-name','new-project-name');
     newProjectNameInput.focus();
 
     //Create buttons to save or cancel the new project addition
-    let newProjectButtonContainer = createElementInDOM('div', newProjectContainer, 'button-container');
+    let newProjectButtonContainer = createElementInDOM('div', newProjectForm, 'button-container');
 
-    let newProjectSaveButton = createElementInDOM('button', newProjectButtonContainer, 'save-new-project-button', 'save-new-project-button')
-    newProjectSaveButton.textContent = 'Save';
-    newProjectSaveButton.addEventListener('click', () =>  {
-        createProject(newProjectNameInput.value);
-        render(projectList, toDoList);
-    });
+    let newProjectSaveButton = createElementInDOM('input', newProjectButtonContainer, 'save-new-project-button', 'save-new-project-button')
+    newProjectSaveButton.type = 'submit';
+    newProjectSaveButton.value = 'Save';
+
 
     let newProjectCancelButton = createElementInDOM('button', newProjectButtonContainer, 'cancel-new-project-button', 'cancel-new-project-button')
     newProjectCancelButton.textContent = 'Cancel';
     newProjectCancelButton.addEventListener('click', render);
+}
+
+function addNewProject(e) {
+        //Prevent any standard form actions that might cause unintentional behaviour
+        e.preventDefault();
+
+        //Fetch the name input and create a new project with this name
+        let newProjectNameInput = document.querySelector('#new-project-name');
+        createProject(newProjectNameInput.value);
+        
+        //Re-render the page
+        render(projectList, toDoList);
 }
 
 export function initOverlay() {

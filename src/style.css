@@ -19,21 +19,17 @@ body {
     border: 1px solid black;
     min-width: 250px;
     overflow-wrap: anywhere;
-    /* display: flex;
-    flex-direction: column;
-    align-items: center; */
     border-radius: 5px;
     padding: 10px;
 }
 
-.new-project-container {
+.new-project-container>form {
     display:flex;
     flex-direction: column;
     justify-content: flex-start;
-    align-items: center;
 }
 
-.new-project-container>input {
+.new-project-container>form>input {
     height: 28px;
     max-width: 180px;
     font-size: 1.5em;
@@ -47,6 +43,26 @@ body {
     min-height: 30px;
     border: 1px solid black;
     background-color: white;
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+}
+
+.to-do-card.completed {
+    text-decoration:line-through;
+}
+
+.to-do-card:last-of-type {
+    margin-bottom: 10px;
+}
+
+.to-do-checkbox {
+    grid-row: 1 / 999;
+    margin: 6px;
+    /* align-self: center; */
+}
+
+.to-do-due-date {
+    grid-column: 2;
 }
 
 /* Overlay and form styles */
