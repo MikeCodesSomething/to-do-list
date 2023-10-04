@@ -1,5 +1,7 @@
 import { projectList, createProject } from "./project.js";
 import { toDoList } from "./index.js";
+import { intlFormatDistance, startOfDay } from 'date-fns'
+
 
 export function render() {
     
@@ -55,7 +57,16 @@ export function render() {
         toDoTitle.textContent = toDo.title;
 
         let toDoDueDate = createElementInDOM('div', toDoCard, 'to-do-due-date');
-        toDoDueDate.textContent = toDo.dueDate === ""? "" :`Due: ${toDo.dueDate}`;
+        console.log(toDo.dueDate);
+        if(toDo.dueDate !== "") {
+            let dueDateFormatted = ''
+            //If due date is today display 'today'
+            if(startOfDay(toDo.dueDate) - startOfDay(new Date()) === 0) dueDateFormatted = 'today';
+            //Else we return the distance
+            else dueDateFormatted =  intlFormatDistance(startOfDay(toDo.dueDate), startOfDay(new Date()), { addSuffix: true });
+            toDoDueDate.textContent = `Due: ${dueDateFormatted}`
+        }
+        
     }
     
 

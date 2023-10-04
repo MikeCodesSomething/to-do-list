@@ -12,7 +12,7 @@ body {
 
 #content-container {
     display: flex;
-    gap: 10px
+    gap: 10px;
 }
 
 .project-container {
@@ -40,16 +40,20 @@ body {
 /* To-Do styles */
 
 .to-do-card {
-    min-height: 30px;
+    min-height: 40px;
     border: 1px solid black;
     background-color: white;
     display: grid;
-    grid-template-columns: 1fr 5fr;
+    grid-template-columns: 40px 1fr;
+    grid-template-rows: 10px 1fr 15px;
+    /* Little negative margin to stop the overlapping borders looking weird */
+    margin-top: -1px;
 }
 
 .to-do-card.completed {
     text-decoration:line-through;
 }
+
 
 .to-do-card:last-of-type {
     margin-bottom: 10px;
@@ -57,12 +61,20 @@ body {
 
 .to-do-checkbox {
     grid-row: 1 / 999;
-    margin: 6px;
+    width: 20px;
+    margin: 10px;
     /* align-self: center; */
+}
+
+.to-do-title {
+    grid-row: 2;
+    max-width: 20ch;
 }
 
 .to-do-due-date {
     grid-column: 2;
+    grid-row: 3;
+    font-size: 0.8rem;
 }
 
 /* Overlay and form styles */

@@ -1,11 +1,9 @@
-import { formatDistance, subDays } from 'date-fns'
 import css from "./style.css";
 import { projectList, project, createProject } from "./project.js"
 import { initOverlay, render, createElementInDOM } from "./displayController.js";
 
 
 // To-dolistception:
-// Add a way to complete tasks and display due date by default
 // Add a way to view more details of the task
 // Implement localStorage https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
 // Update to-do items from UI
@@ -25,7 +23,8 @@ const toDo = {
         //Initialise properties
         this.title = title;
         this.description = description;
-        this.dueDate = dueDate;
+        //store "" if no date provided, else store the date
+        dueDate === "" ? this.dueDate = "" : this.dueDate = new Date(dueDate);
         this.priority = priority;
         this.notes = notes;
         this.completed = false
@@ -82,18 +81,18 @@ const exampleProject = createProject('exampleProject');
 
 //Create an example todo
 const exampleToDo = Object.create(toDo);
-exampleToDo.init('example to-do', 'desc', 'tomorrow', 'high', "here's some notes");
+exampleToDo.init('example to-do', 'desc', new Date(), 'high', "here's some notes");
 
 //Link example toDo to example project
 exampleProject.linkToDo(exampleToDo);
 
 //Create a second example todo (unlinked)
 const exampleToDo2 = Object.create(toDo);
-exampleToDo2.init('example to-do2', 'desc', 'tomorrow', 'med', "here's some notes");
+exampleToDo2.init('example to-do2', 'desc', new Date(), 'med', "here's some notes");
 
 //Create a third example todo (unlinked)
 const exampleToDo3 = Object.create(toDo);
-exampleToDo3.init('example to-do3', 'desc', 'tomorrow', 'med', "here's some notes");
+exampleToDo3.init('example to-do3', 'desc', new Date(), 'med', "here's some notes");
 
 
 
