@@ -20,7 +20,7 @@ export function render() {
 
         let projectAddToDoButton = createElementInDOM('button', projectContainer,'add-to-do-button');
         projectAddToDoButton.textContent = 'Add To-Do';
-        projectAddToDoButton.addEventListener('click', openOverlay);
+        projectAddToDoButton.addEventListener('click', openCreateOverlay);
         projectAddToDoButton.dataset.projectId = project.id;
 
 
@@ -120,6 +120,7 @@ function addCardContents(toDo, toDoCard) {
     //Add Edit Button
     let toDoEditButton = createElementInDOM('button', toDoMoreDetails, 'to-do-edit-button');
     toDoEditButton.textContent = `Edit`;
+    toDoEditButton.addEventListener('click', openEditOverlay.bind(toDo)); 
 
     //Add Delete Button
     let toDoDeleteButton = createElementInDOM('button', toDoMoreDetails, 'to-do-delete-button');
@@ -174,17 +175,7 @@ function addNewProject(e) {
         render(projectList, toDoList);
 }
 
-export function initOverlay() {
 
-    //Overlay initilisation, could move this out if there's a better place
-    let closeOverlayButton = document.getElementById("close-overlay-button");
-    let overlay = document.getElementById("overlay");
-    overlay.addEventListener('click', (e) => {if(e.target === overlay) closeOverlay()});
-    closeOverlayButton.addEventListener('click', closeOverlay);
-    
-    let addToDoForm = document.getElementById('add-to-do-form');
-    addToDoForm.addEventListener('submit', addToDoWithForm);   
-}
 
 function addToDoWithForm(e) {
     //Stop the form actually getting submitted as we don't do anything with that right now
@@ -238,18 +229,83 @@ export function createElementInDOM(elementType, parentElement, className, id) {
     return element.DOMObject;
 };
 
-function openOverlay(e) {
+export function initOverlay() {
+
+    //Overlay initilisation, could move this out if there's a better place
+    let closeOverlayButton = document.getElementById("close-overlay-button");
+    let overlay = document.getElementById("overlay");
+    overlay.addEventListener('click', (e) => {if(e.target === overlay) closeOverlay()});
+    closeOverlayButton.addEventListener('click', closeOverlay);
+ 
+}
+
+
+function openCreateOverlay(e) {
+
+    //Find out which project we're adding into
     let id = e.target.dataset.projectId;
     let projectInput = document.getElementById("new-to-do-project");
     projectInput.value = projectList[id].name;
     projectInput.dataset.projectId = id;
 
+    //Open overlay
     let overlay = document.getElementById("overlay");
     overlay.classList.add("open");
+
+    //Focus on title
     let title = document.getElementById("title");
     title.focus();
+    
+    //Set the properties of the submitting the form
+    let toDoForm = document.getElementById('add-to-do-form');
+    toDoForm.addEventListener('submit', editToDoWithForm); 
+
+    //Remove the edit event listener if present (as create/edit share overlays)
+    toDoForm.removeEventListener('submit', editToDoWithForm.bind(this))
 }
 
 function closeOverlay() {
     overlay.classList.remove("open");
+}
+
+
+function openEditOverlay() {
+    
+    //Open the overlay
+    let overlay = document.getElementById("overlay");
+    overlay.classList.add("open");
+
+    //Fill in the current values
+    let projectInput = document.getElementById("new-to-do-project");
+    projectInput.value = this.project.name;
+
+    let title = document.getElementById("title");
+    title.value = this.title;
+
+    let description = document.getElementById("description")
+    description.value = this.description;
+
+    let dueDate = document.getElementById("due-date")
+    dueDate.value = this.dueDate;
+
+    let priority = document.getElementById("priority")
+    priority.value = this.priority;
+
+    let notes = document.getElementById("notes")
+    notes.value = this.notes;
+
+    // focus on the title and change the button text to 'save'
+    title.focus();
+
+    //Set the properties of the submitting the form
+    let toDoForm = document.getElementById('add-to-do-form');
+    toDoForm.addEventListener('submit', editToDoWithForm.bind(this)); 
+
+    //Remove the edit event listener if present (as create/edit share overlays)
+    toDoForm.removeEventListener('submit', addToDoWithForm);
+
+}
+
+function editToDoWithForm() {
+    this.multiEdit(title.value, description.value, dueDate.value, priority.value, notes.value)
 }

@@ -23,6 +23,19 @@ body {
     padding: 10px;
 }
 
+.new-project-container {
+    border: 1px dotted black;
+    min-width: 250px;
+    display: flex;
+    align-items: flex-start;
+    /* justify-content: center; */
+}
+
+.new-project-button {
+    margin-top: 30px;
+    margin-left: 10px;
+}
+
 .new-project-container>form {
     display:flex;
     flex-direction: column;
