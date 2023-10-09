@@ -77,7 +77,7 @@ window.render = render;
 
 
 //Create an example project
-const exampleProject = createProject('exampleProject');
+const exampleProject = createProject('example project');
 
 //Create an example todo
 const exampleToDo = Object.create(toDo);

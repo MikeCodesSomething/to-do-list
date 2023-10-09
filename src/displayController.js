@@ -37,35 +37,7 @@ export function render() {
         let toDoCard = createElementInDOM('div', linkedProjectToDosContainer, 'to-do-card');
         
         //Add card contents
-        let toDoCheckbox = createElementInDOM('input',toDoCard, 'to-do-checkbox');
-        toDoCheckbox.type = 'checkbox';
-        
-        //Set checkbox to checked and strikethrough text if to-do is completed
-        if(toDo.completed === true){
-            toDoCard.classList.add('completed');
-            toDoCheckbox.checked = true;
-        } 
-
-        toDoCheckbox.addEventListener('change', () => {
-            //Flip completed status
-            toDo.completed = !toDo.completed;
-            toDoCard.classList.toggle('completed');
-        });
-        
-
-        let toDoTitle = createElementInDOM('div', toDoCard, 'to-do-title');
-        toDoTitle.textContent = toDo.title;
-
-        let toDoDueDate = createElementInDOM('div', toDoCard, 'to-do-due-date');
-        console.log(toDo.dueDate);
-        if(toDo.dueDate !== "") {
-            let dueDateFormatted = ''
-            //If due date is today display 'today'
-            if(startOfDay(toDo.dueDate) - startOfDay(new Date()) === 0) dueDateFormatted = 'today';
-            //Else we return the distance
-            else dueDateFormatted =  intlFormatDistance(startOfDay(toDo.dueDate), startOfDay(new Date()), { addSuffix: true });
-            toDoDueDate.textContent = `Due: ${dueDateFormatted}`
-        }
+        addCardContents(toDo, toDoCard);
         
     }
     
@@ -78,6 +50,65 @@ export function render() {
 
 
 };
+
+function addCardContents(toDo, toDoCard) {
+
+    //Add checkbox
+    let toDoCheckbox = createElementInDOM('input',toDoCard, 'to-do-checkbox');
+    toDoCheckbox.type = 'checkbox';
+    
+    //Set checkbox to checked and strikethrough text if to-do is completed
+    if(toDo.completed === true){
+        toDoCard.classList.add('completed');
+        toDoCheckbox.checked = true;
+    } 
+
+    toDoCheckbox.addEventListener('change', () => {
+        //Flip completed status
+        toDo.completed = !toDo.completed;
+        toDoCard.classList.toggle('completed');
+    });
+    
+    //Add title
+    let toDoTitle = createElementInDOM('div', toDoCard, 'to-do-title');
+    toDoTitle.textContent = toDo.title;
+
+    //Add due date
+    let toDoDueDate = createElementInDOM('div', toDoCard, 'to-do-due-date');
+    console.log(toDo.dueDate);
+    if(toDo.dueDate !== "") {
+        let dueDateFormatted = ''
+        //If due date is today display 'today'
+        if(startOfDay(toDo.dueDate) - startOfDay(new Date()) === 0) dueDateFormatted = 'today';
+        //Else we return the distance
+        else dueDateFormatted =  intlFormatDistance(startOfDay(toDo.dueDate), startOfDay(new Date()), { addSuffix: true });
+        toDoDueDate.textContent = `Due: ${dueDateFormatted}`
+    }
+
+    //Add more details panel
+    let toDoMoreDetails = createElementInDOM('div', toDoCard, 'to-do-more-details')
+    toDoMoreDetails.classList.add('hidden');
+
+    //Toggle more details panel when to do card clicked (but not checkbox)
+    toDoCard.addEventListener('click', (e) => {
+        if(e.target !== toDoCheckbox) {
+            toDoMoreDetails.classList.toggle('hidden');
+            toDoCard.classList.toggle('expanded');
+        }
+        });
+
+    //Add Description
+    let toDoDescription = createElementInDOM('div', toDoMoreDetails, 'to-do-description');
+    toDoDescription.textContent = `Description ${toDo.description}`;
+
+    //Add Priority
+    let toDoPriority = createElementInDOM('div', toDoMoreDetails, 'to-do-priority');
+    toDoPriority.textContent = `Priority: ${toDo.priority}`;
+
+    //Add Notes
+    let toDoNotes = createElementInDOM('div', toDoMoreDetails, 'to-do-notes');
+    toDoNotes.textContent = `Notes: ${toDo.notes}`;
+}
 
 function openNewProjectEntry(newprojectContainer) {
     
