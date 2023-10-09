@@ -28,17 +28,19 @@ export function render() {
     }
 
     //Create cards for tasks in the project container
-    console.log(toDoList)
     for(let toDo of toDoList) {
-        //Get the linked project using the project id
-        let linkedProjectToDosContainer = document.querySelector(`.project-to-dos-container[data-project-id="${toDo.project.id}"]`);
+        //Don't render if deleted
+        if(toDo.deleted === false){
         
-        //Create the to-do card
-        let toDoCard = createElementInDOM('div', linkedProjectToDosContainer, 'to-do-card');
-        
-        //Add card contents
-        addCardContents(toDo, toDoCard);
-        
+            //Get the linked project using the project id
+            let linkedProjectToDosContainer = document.querySelector(`.project-to-dos-container[data-project-id="${toDo.project.id}"]`);
+            
+            //Create the to-do card
+            let toDoCard = createElementInDOM('div', linkedProjectToDosContainer, 'to-do-card');
+            
+            //Add card contents
+            addCardContents(toDo, toDoCard);
+        } 
     }
     
 
@@ -73,10 +75,9 @@ function addCardContents(toDo, toDoCard) {
     let toDoTitle = createElementInDOM('div', toDoCard, 'to-do-title');
     toDoTitle.textContent = toDo.title;
 
-    //Add due date
-    let toDoDueDate = createElementInDOM('div', toDoCard, 'to-do-due-date');
-    console.log(toDo.dueDate);
+    //Add due date if present
     if(toDo.dueDate !== "") {
+    let toDoDueDate = createElementInDOM('div', toDoCard, 'to-do-due-date');
         let dueDateFormatted = ''
         //If due date is today display 'today'
         if(startOfDay(toDo.dueDate) - startOfDay(new Date()) === 0) dueDateFormatted = 'today';
@@ -89,25 +90,41 @@ function addCardContents(toDo, toDoCard) {
     let toDoMoreDetails = createElementInDOM('div', toDoCard, 'to-do-more-details')
     toDoMoreDetails.classList.add('hidden');
 
-    //Toggle more details panel when to do card clicked (but not checkbox)
+    //Toggle more details panel when to do card clicked (but not any of the buttons/checkbox)
     toDoCard.addEventListener('click', (e) => {
-        if(e.target !== toDoCheckbox) {
+        //check we haven't clicked a button or checbox via the DOM tagName
+        if(!['BUTTON','INPUT'].includes(e.target.tagName)) {
             toDoMoreDetails.classList.toggle('hidden');
             toDoCard.classList.toggle('expanded');
         }
         });
 
-    //Add Description
-    let toDoDescription = createElementInDOM('div', toDoMoreDetails, 'to-do-description');
-    toDoDescription.textContent = `Description ${toDo.description}`;
+    //Add Description if present
+    if(toDo.description !== "") {
+        let toDoDescription = createElementInDOM('div', toDoMoreDetails, 'to-do-description');
+        toDoDescription.textContent = `Description: ${toDo.description}`;
+    }
 
-    //Add Priority
-    let toDoPriority = createElementInDOM('div', toDoMoreDetails, 'to-do-priority');
-    toDoPriority.textContent = `Priority: ${toDo.priority}`;
+    //Add Priority if present
+    if(toDo.priority !== "") {
+        let toDoPriority = createElementInDOM('div', toDoMoreDetails, 'to-do-priority');
+        toDoPriority.textContent = `Priority: ${toDo.priority}`;
+    }
 
-    //Add Notes
+    //Add Notes if present 
+    if(toDo.notes !== "") {
     let toDoNotes = createElementInDOM('div', toDoMoreDetails, 'to-do-notes');
     toDoNotes.textContent = `Notes: ${toDo.notes}`;
+    }
+
+    //Add Edit Button
+    let toDoEditButton = createElementInDOM('button', toDoMoreDetails, 'to-do-edit-button');
+    toDoEditButton.textContent = `Edit`;
+
+    //Add Delete Button
+    let toDoDeleteButton = createElementInDOM('button', toDoMoreDetails, 'to-do-delete-button');
+    toDoDeleteButton.textContent = `Delete`;
+    toDoDeleteButton.addEventListener('click', () => {toDo.delete(); render()})
 }
 
 function openNewProjectEntry(newprojectContainer) {
@@ -167,7 +184,6 @@ export function initOverlay() {
     
     let addToDoForm = document.getElementById('add-to-do-form');
     addToDoForm.addEventListener('submit', addToDoWithForm);   
-    console.log("init overlay was called") 
 }
 
 function addToDoWithForm(e) {
@@ -224,7 +240,6 @@ export function createElementInDOM(elementType, parentElement, className, id) {
 
 function openOverlay(e) {
     let id = e.target.dataset.projectId;
-    console.log(id);
     let projectInput = document.getElementById("new-to-do-project");
     projectInput.value = projectList[id].name;
     projectInput.dataset.projectId = id;
