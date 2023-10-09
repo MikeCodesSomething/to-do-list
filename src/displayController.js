@@ -200,7 +200,7 @@ function addToDoWithForm(e) {
         projectList[projectId].linkToDo(newToDo);
     }
 
-    //Reload and close the overlay
+    //Render and clear/close the overlay
     render(projectList, toDoList);
     closeOverlay();
     let addToDoForm = document.getElementById('add-to-do-form');
@@ -258,10 +258,15 @@ function openCreateOverlay(e) {
     
     //Set the properties of the submitting the form
     let toDoForm = document.getElementById('add-to-do-form');
-    toDoForm.addEventListener('submit', editToDoWithForm); 
 
-    //Remove the edit event listener if present (as create/edit share overlays)
-    toDoForm.removeEventListener('submit', editToDoWithForm.bind(this))
+    //Remove any event listener if present (as create/edit share overlays)
+    toDoForm.removeEventListener('submit', addToDoWithForm); 
+    toDoForm.removeEventListener('submit', (e) => editToDoWithForm(e, inputFields));
+    
+    toDoForm.addEventListener('submit', addToDoWithForm); 
+    console.log('adding add to-do event listener')
+    
+
 }
 
 function closeOverlay() {
@@ -275,37 +280,71 @@ function openEditOverlay() {
     let overlay = document.getElementById("overlay");
     overlay.classList.add("open");
 
+    //Hook up submitting the form to the edit to-do api
+    let toDoForm = document.getElementById('add-to-do-form');
+
+    //Clone to reset any event listeners
+    let newToDoForm = toDoForm.cloneNode(true);
+    toDoForm.parentNode.replaceChild(newToDoForm, toDoForm);
+
+    //Add the event listener
+    newToDoForm.addEventListener('submit', (e) => editToDoWithForm(e, inputFields));
+
     //Fill in the current values
-    let projectInput = document.getElementById("new-to-do-project");
-    projectInput.value = this.project.name;
+    let inputFields = {};
 
-    let title = document.getElementById("title");
-    title.value = this.title;
+    //set the source ToDo for the fields we're editing
+    inputFields.toDo = this;
 
-    let description = document.getElementById("description")
-    description.value = this.description;
+    inputFields.projectInput = document.getElementById("new-to-do-project");
+    inputFields.projectInput.value = this.project.name;
 
-    let dueDate = document.getElementById("due-date")
-    dueDate.value = this.dueDate;
+    inputFields.title = document.getElementById("title");
+    inputFields.title.value = this.title;
 
-    let priority = document.getElementById("priority")
-    priority.value = this.priority;
+    inputFields.description = document.getElementById("description")
+    inputFields.description.value = this.description;
 
-    let notes = document.getElementById("notes")
-    notes.value = this.notes;
+    inputFields.dueDate = document.getElementById("due-date")
+    inputFields.dueDate.valueAsDate = this.dueDate;
+
+    inputFields.priority = document.getElementById("priority")
+    // Loop through the options to find and select the one matching this.priority
+    for (let i = 0; i < inputFields.priority.options.length; i++) {
+        if (inputFields.priority.options[i].value === this.priority) {
+            inputFields.priority.options[i].selected = true;
+            break; // Exit the loop once a match is found
+        }
+    }
+
+    inputFields.notes = document.getElementById("notes")
+    inputFields.notes.value = this.notes;
+
 
     // focus on the title and change the button text to 'save'
     title.focus();
 
-    //Set the properties of the submitting the form
-    let toDoForm = document.getElementById('add-to-do-form');
-    toDoForm.addEventListener('submit', editToDoWithForm.bind(this)); 
-
-    //Remove the edit event listener if present (as create/edit share overlays)
-    toDoForm.removeEventListener('submit', addToDoWithForm);
-
 }
 
-function editToDoWithForm() {
-    this.multiEdit(title.value, description.value, dueDate.value, priority.value, notes.value)
+function editToDoWithForm(e, inputFields) {
+    //Prevent any standard form actions that might cause unintentional behaviour
+    e.preventDefault();
+
+    // should never happen as title is required, but stops weird double form submission bugs
+    if(inputFields.title === "") return;
+
+    //Update the to-do with the new values
+    inputFields.toDo.multiEdit(
+                        inputFields.title.value,
+                        inputFields.description.value,
+                        inputFields.dueDate.valueAsDate,
+                        inputFields.priority.value,
+                        inputFields.notes.value);
+
+
+    //Render and clear/close the overlay
+    render(projectList, toDoList);
+    closeOverlay();
+    let toDoForm = document.getElementById('add-to-do-form');
+    toDoForm.reset();
 }
