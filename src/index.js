@@ -41,7 +41,7 @@ const toDo = {
         //lets you edit the standard properties in one method
         this.title = title;
         this.description = description;
-        dueDate === "" ? this.dueDate = "" : this.dueDate = new Date(dueDate);
+        ["", null].includes(dueDate) ? this.dueDate = "" : this.dueDate = new Date(dueDate);
         this.priority = priority;
         this.notes = notes;
     },

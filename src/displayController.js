@@ -306,7 +306,7 @@ function openEditOverlay() {
     inputFields.description.value = this.description;
 
     inputFields.dueDate = document.getElementById("due-date")
-    inputFields.dueDate.valueAsDate = this.dueDate;
+    if(this.dueDate !== "") inputFields.dueDate.valueAsDate = this.dueDate;
 
     inputFields.priority = document.getElementById("priority")
     // Loop through the options to find and select the one matching this.priority
