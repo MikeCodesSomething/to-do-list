@@ -23,9 +23,8 @@ body {
     padding: 10px;
 }
 
-.new-project-container {
+.new.project-container {
     border: 1px dotted black;
-    min-width: 250px;
     display: flex;
     align-items: flex-start;
     /* justify-content: center; */
@@ -36,13 +35,13 @@ body {
     margin-left: 10px;
 }
 
-.new-project-container>form {
+.new.project-container>form {
     display:flex;
     flex-direction: column;
     justify-content: flex-start;
 }
 
-.new-project-container>form>input {
+.new.project-container>form>input {
     height: 28px;
     max-width: 180px;
     font-size: 1.5em;

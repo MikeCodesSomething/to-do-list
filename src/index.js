@@ -1,13 +1,16 @@
 import css from "./style.css";
+import storageAvailable from "./storageAvailable.js";
 import { projectList, project, createProject } from "./project.js"
 import { initOverlay, render, createElementInDOM } from "./displayController.js";
 
 
 // To-dolistception:
-// Add a way to view more details of the task
 // Implement localStorage https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
-// Update to-do items from UI
-// Update projects from UI
+// - Make a function to load to-do objects from localStorage if it's there
+// - Make a function to save to-dos to localStorage when a to-do is updated or added (also projects)
+
+//Fix bug where adding new tasks can overwrite the old task on a new project
+
 
 
 
@@ -67,7 +70,11 @@ const toDo = {
 const defaultProject = createProject('Inbox');
 render(projectList, toDoList);
 initOverlay();
-
+if (storageAvailable("localStorage")) {
+    // Yippee! We can use localStorage awesomeness
+  } else {
+    // Too bad, no localStorage for us
+  }
 
 
 

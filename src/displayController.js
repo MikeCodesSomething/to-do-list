@@ -20,7 +20,7 @@ export function render() {
 
         let projectAddToDoButton = createElementInDOM('button', projectContainer,'add-to-do-button');
         projectAddToDoButton.textContent = 'Add To-Do';
-        projectAddToDoButton.addEventListener('click', openCreateOverlay);
+        projectAddToDoButton.addEventListener('click', openCreateOverlay.bind(project));
         projectAddToDoButton.dataset.projectId = project.id;
 
 
@@ -45,7 +45,8 @@ export function render() {
     
 
     //Create 'Add Project' button and initialise
-    let newProjectContainer = createElementInDOM('div', contentContainer, 'new-project-container')
+    let newProjectContainer = createElementInDOM('div', contentContainer, 'project-container')
+    newProjectContainer.classList.add('new');
     let newProjectButton = createElementInDOM('button', newProjectContainer, 'new-project-button');
     newProjectButton.textContent = '+ Add Project';
     newProjectButton.addEventListener('click', openNewProjectEntry)
@@ -134,7 +135,7 @@ function openNewProjectEntry(newprojectContainer) {
     let newProjectButton = document.querySelector('.new-project-button') ;
     newProjectButton.classList.add('hidden')
 
-    let newProjectContainer = document.querySelector('.new-project-container');
+    let newProjectContainer = document.querySelector('.project-container.new');
     newProjectContainer.classList.add('project-container');
 
     //Create a form for creating a new project
@@ -243,27 +244,25 @@ export function initOverlay() {
 function openCreateOverlay(e) {
 
     //Find out which project we're adding into
-    let id = e.target.dataset.projectId;
     let projectInput = document.getElementById("new-to-do-project");
-    projectInput.value = projectList[id].name;
-    projectInput.dataset.projectId = id;
+    projectInput.value = this.name;
+    projectInput.dataset.projectId = this.id;
 
     //Open overlay
     let overlay = document.getElementById("overlay");
     overlay.classList.add("open");
 
+    //Select the form
+    let toDoForm = document.getElementById('add-to-do-form');
+    //Clone to reset any event listeners
+    let newToDoForm = toDoForm.cloneNode(true);
+    toDoForm.parentNode.replaceChild(newToDoForm, toDoForm);
+
     //Focus on title
     let title = document.getElementById("title");
     title.focus();
-    
-    //Set the properties of the submitting the form
-    let toDoForm = document.getElementById('add-to-do-form');
-
-    //Remove any event listener if present (as create/edit share overlays)
-    toDoForm.removeEventListener('submit', addToDoWithForm); 
-    toDoForm.removeEventListener('submit', (e) => editToDoWithForm(e, inputFields));
-    
-    toDoForm.addEventListener('submit', addToDoWithForm); 
+        
+    newToDoForm.addEventListener('submit', addToDoWithForm); 
     console.log('adding add to-do event listener')
     
 
@@ -331,7 +330,7 @@ function editToDoWithForm(e, inputFields) {
     e.preventDefault();
 
     // should never happen as title is required, but stops weird double form submission bugs
-    if(inputFields.title === "") return;
+    if(inputFields.title.value === "") return;
 
     //Update the to-do with the new values
     inputFields.toDo.multiEdit(
