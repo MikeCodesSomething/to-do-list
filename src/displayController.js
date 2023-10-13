@@ -1,10 +1,14 @@
 import { projectList, createProject } from "./project.js";
 import { toDoList } from "./index.js";
 import { intlFormatDistance, startOfDay } from 'date-fns'
+import { saveDataToLocalStorage } from "./storage.js";
 
 
 export function render() {
     
+    //Update local storage
+    saveDataToLocalStorage(toDoList, projectList)
+
     //Reset the container
     let contentContainer = document.querySelector('#content-container');
     contentContainer.replaceChildren();
@@ -50,7 +54,14 @@ export function render() {
     let newProjectButton = createElementInDOM('button', newProjectContainer, 'new-project-button');
     newProjectButton.textContent = '+ Add Project';
     newProjectButton.addEventListener('click', openNewProjectEntry)
-
+    
+    //Create reset all button
+    let resetAllButton = createElementInDOM('button', contentContainer, 'reset-all-button');
+    resetAllButton.textContent = 'Reset ALL (cannot be undone)'
+    resetAllButton.addEventListener('click', () => {
+        window.localStorage.clear();
+        location.reload();    
+    });    
 
 };
 

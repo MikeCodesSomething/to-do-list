@@ -1,4 +1,4 @@
-export const projectList = [];
+export let projectList = [];
 
 // Prototype for projects
 export const project = {
@@ -17,11 +17,11 @@ export const project = {
 
         //Create new link to this project
         toDo.project = this;
-        this.toDos.push(toDo);
+        this.toDos.push(toDo.id);
     },
 
     unlinkToDo: function(toDo) {
-        let index = this.toDos.indexOf(toDo)
+        let index = this.toDos.indexOf(toDo.id)
         if(index !== -1) {
             this.toDos.splice(index, 1);
             toDo.project = 'default';
