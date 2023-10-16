@@ -79,6 +79,7 @@ let storedToDoList = getLocalStorageToDoList();
 if(storedToDoList.length > 0) {
     for(let item of storedToDoList) {
         let linkedProjectID = item.project.id
+        console.log(linkedProjectID)
         const newToDo = Object.create(toDo);
         newToDo.init(item.title, item.description, item.dueDate, item.priority, item.notes);
         projectList[linkedProjectID].linkToDo(newToDo);
